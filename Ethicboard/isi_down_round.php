@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ISITDOWN Round - ตรวจเยี่ยมหอผู้ป่วย</title>
+    <meta name="description" content="แบบประเมินตรวจเยี่ยมหอผู้ป่วยก่อนทำงานในแต่ละเวร ISITDOWN Round + SHA + จริยธรรม">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0F52BA;
+            --primary-light: #3B82F6;
+            --primary-dark: #0A3A8A;
+            --primary-bg: #EBF2FF;
+            --accent: #06B6D4;
+            --success: #10B981;
+            --success-dark: #059669;
+            --success-bg: #ECFDF5;
+            --warning: #F59E0B;
+            --warning-bg: #FFFBEB;
+            --danger: #EF4444;
+            --danger-dark: #DC2626;
+            --danger-bg: #FEF2F2;
+            --bg: #F1F5F9;
+            --card: #FFFFFF;
+            --border: #E2E8F0;
+            --border-light: #F1F5F9;
+            --text: #0F172A;
+            --text-secondary: #475569;
+            --text-muted: #94A3B8;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.1);
+            --radius: 16px;
+            --radius-sm: 12px;
+            --radius-xs: 8px;
+        }
+
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Noto Sans Thai', 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 90px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #0F52BA 0%, #0A3A8A 50%, #1E3A5F 100%);
+            padding: 14px 16px;
+            padding-top: max(14px, env(safe-area-inset-top));
+            position: -webkit-sticky; /* For Safari / iOS */
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 4px 20px rgba(10, 58, 138, 0.35);
+        }
+
+        .header-top {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header-icon {
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: white; font-size: 17px; font-weight: 700;
+            letter-spacing: -0.3px; line-height: 1.2;
+        }
+
+        .header-sub {
+            color: rgba(255,255,255,0.7); font-size: 11px;
+            margin-top: 1px;
+        }
+
+        .header-time {
+            margin-left: auto; text-align: right;
+            color: rgba(255,255,255,0.6); font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .header-time .time-now {
+            font-size: 18px; font-weight: 700;
+            color: white; letter-spacing: 1px;
+        }
+
+        /* Progress */
+        .progress-strip {
+            display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px; padding: 8px 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-strip .label {
+            color: rgba(255,255,255,0.8); font-size: 11px; font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .progress-bar-wrap {
+            flex: 1; height: 5px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 3px; overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%; border-radius: 3px;
+            background: linear-gradient(90deg, #06B6D4, #10B981);
+            transition: width 0.5s cubic-bezier(.4,0,.2,1);
+            width: 0%;
+        }
+
+        .progress-strip .count {
+            color: white; font-size: 13px; font-weight: 700;
+            min-width: 36px; text-align: right;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 540px; margin: 0 auto; padding: 14px 12px;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            animation: slideUp 0.35s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:nth-child(1) { animation-delay: 0.03s; }
+        .card:nth-child(2) { animation-delay: 0.06s; }
+        .card:nth-child(3) { animation-delay: 0.09s; }
+        .card:nth-child(4) { animation-delay: 0.12s; }
+        .card:nth-child(5) { animation-delay: 0.15s; }
+        .card:nth-child(6) { animation-delay: 0.18s; }
+
+        .card-header {
+            padding: 12px 14px;
+            display: flex; align-items: center; gap: 10px;
+            background: linear-gradient(135deg, #FAFBFD 0%, #F1F5F9 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-icon {
+            width: 34px; height: 34px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px; flex-shrink: 0;
+        }
+
+        .card-icon.blue   { background: #DBEAFE; color: #1D4ED8; }
+        .card-icon.green  { background: #D1FAE5; color: #059669; }
+        .card-icon.purple { background: #EDE9FE; color: #7C3AED; }
+        .card-icon.orange { background: #FFEDD5; color: #EA580C; }
+        .card-icon.cyan   { background: #CFFAFE; color: #0891B2; }
+        .card-icon.red    { background: #FEE2E2; color: #DC2626; }
+        .card-icon.pink   { background: #FCE7F3; color: #DB2777; }
+
+        .card-title {
+            font-size: 14px; font-weight: 700; color: var(--text);
+        }
+
+        .card-body { padding: 14px; }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-group { margin-bottom: 12px; }
+        .form-group:last-child { margin-bottom: 0; }
+
+        .form-label {
+            display: block; font-size: 12px; font-weight: 600;
+            color: var(--text-secondary); margin-bottom: 5px;
+            letter-spacing: 0.2px;
+        }
+
+        .form-input, .form-select {
+            width: 100%; padding: 10px 12px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-xs);
+            font-size: 15px; font-family: inherit;
+            color: var(--text); background: #FAFBFC;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+            background: white;
+        }
+
+        .form-row {
+            display: grid; gap: 10px;
+        }
+        .form-row.c2 { grid-template-columns: 1fr 1fr; }
+        .form-row.c3 { grid-template-columns: 1fr 1fr 1fr; }
+
+        .form-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%2394A3B8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 34px;
+        }
+
+        /* ===== SEARCH SELECT ===== */
+        .search-select-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-select-container .arrow-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            transition: transform 0.2s;
+        }
+
+        .search-select-container.open .arrow-icon {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .search-select-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-xs);
+            box-shadow: var(--shadow-lg);
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+            margin-top: 4px;
+        }
+
+        .search-select-dropdown.open {
+            display: block;
+        }
+
+        .search-select-group-header {
+            background: #F8FAFC;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-light);
+            border-top: 1px solid var(--border-light);
+        }
+        .search-select-group-header:first-child {
+            border-top: none;
+        }
+
+        .search-select-option {
+            padding: 10px 12px;
+            font-size: 14px;
+            color: var(--text);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .search-select-option:hover,
+        .search-select-option.highlighted {
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+        }
+
+        .search-select-option.selected {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* ===== QUICK TAGS ===== */
+        .quick-tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+
+        .quick-tag-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            background: #F1F5F9;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .quick-tag-chip:hover {
+            background: var(--primary-bg);
+            border-color: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .quick-tag-chip:active {
+            transform: scale(0.96);
+        }
+
+        .quick-tags-group-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            width: 100%;
+            margin-top: 4px;
+            margin-bottom: 2px;
+        }
+
+        /* ===== SHIFT PICKER ===== */
+        .shift-picker {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;
+        }
+
+        .shift-chip {
+            padding: 10px 6px; border-radius: var(--radius-xs);
+            border: 2px solid var(--border);
+            background: white; cursor: pointer;
+            text-align: center; font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .shift-chip .s-icon { font-size: 20px; display: block; margin-bottom: 3px; }
+        .shift-chip .s-name { font-size: 13px; font-weight: 700; display: block; }
+        .shift-chip .s-time { font-size: 10px; color: var(--text-muted); display: block; margin-top: 1px; }
+
+        .shift-chip:active { transform: scale(0.96); }
+
+        .shift-chip.morning.active  { border-color: #F59E0B; background: #FFFBEB; }
+        .shift-chip.morning.active .s-name { color: #D97706; }
+        .shift-chip.evening.active  { border-color: #7C3AED; background: #F5F3FF; }
+        .shift-chip.evening.active .s-name { color: #6D28D9; }
+        .shift-chip.night.active    { border-color: #1D4ED8; background: #EFF6FF; }
+        .shift-chip.night.active .s-name   { color: #1D4ED8; }
+
+        /* ===== ROUND ITEM ===== */
+        .round-item {
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.15s;
+        }
+
+        .round-item:last-child { border-bottom: none; }
+
+        .round-row {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 14px; cursor: pointer;
+        }
+
+        .round-row:active { background: #F8FAFC; }
+
+        .round-letter {
+            width: 32px; height: 32px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; font-weight: 800; color: white; flex-shrink: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .bg-I1 { background: linear-gradient(135deg, #1D4ED8, #2563EB); }
+        .bg-S  { background: linear-gradient(135deg, #0D9488, #14B8A6); }
+        .bg-I2 { background: linear-gradient(135deg, #4F46E5, #6366F1); }
+        .bg-T  { background: linear-gradient(135deg, #DC2626, #EF4444); }
+        .bg-D  { background: linear-gradient(135deg, #EA580C, #F97316); }
+        .bg-O  { background: linear-gradient(135deg, #7C3AED, #8B5CF6); }
+        .bg-W  { background: linear-gradient(135deg, #0891B2, #06B6D4); }
+        .bg-N  { background: linear-gradient(135deg, #DB2777, #EC4899); }
+
+        .round-info { flex: 1; min-width: 0; }
+
+        .round-name {
+            font-size: 14px; font-weight: 600; color: var(--text);
+        }
+
+        .round-desc {
+            font-size: 11px; color: var(--text-muted); margin-top: 1px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+
+        /* Status Toggle */
+        .status-toggle {
+            display: flex; gap: 4px; flex-shrink: 0;
+        }
+
+        .st-btn {
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 2px solid var(--border);
+            background: white; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; transition: all 0.2s;
+        }
+
+        .st-btn:active { transform: scale(0.9); }
+
+        .st-btn.pass-btn.active {
+            border-color: var(--success);
+            background: var(--success-bg);
+            box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+        }
+
+        .st-btn.issue-btn.active {
+            border-color: var(--danger);
+            background: var(--danger-bg);
+            box-shadow: 0 2px 8px rgba(239,68,68,0.25);
+            animation: shake 0.3s ease;
+        }
+
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        /* Issue Panel */
+        .issue-panel {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.35s cubic-bezier(.4,0,.2,1), padding 0.35s;
+            background: #FFFBF0;
+            border-top: none;
+        }
+
+        .issue-panel.open {
+            max-height: 1200px;
+            border-top: 1px dashed #FCD34D;
+        }
+
+        .issue-panel-inner {
+            padding: 12px 14px;
+        }
+
+        .issue-panel .issue-label {
+            font-size: 12px; font-weight: 600; color: #92400E;
+            margin-bottom: 6px;
+            display: flex; align-items: center; gap: 4px;
+        }
+
+        
+
+        .issue-note {
+            width: 100%; padding: 8px 10px;
+            border: 1.5px solid #FCD34D;
+            border-radius: var(--radius-xs);
+            font-size: 13px; font-family: inherit;
+            background: white; resize: vertical;
+            min-height: 50px;
+        }
+
+        .issue-note:focus {
+            outline: none; border-color: #F59E0B;
+        }
+
+        
+        .bed-issue-item {
+            border: 1px solid #FCD34D;
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .bed-issue-item:last-child {
+            margin-bottom: 0;
+        }
+        .bed-issue-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .bed-issue-header .bed-num-input {
+            width: 80px; padding: 5px 10px;
+            border: 1.5px solid #FCD34D;
+            border-radius: 20px; font-size: 13px;
+            font-family: inherit; background: white;
+            text-align: center;
+        }
+        .bed-issue-header .bed-num-input:focus {
+            outline: none; border-color: #F59E0B;
+        }
+        .btn-remove-issue {
+            margin-left: auto;
+            background: #FEF2F2; color: #DC2626; border: none;
+            border-radius: 20px; width: 24px; height: 24px; font-size: 12px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .btn-add-bed {
+            width: 100%; padding: 8px; border: 1.5px dashed #FCD34D;
+            border-radius: var(--radius-sm); background: #FFFBEB;
+            color: #92400E; font-size: 13px; font-weight: 600;
+            cursor: pointer; margin-top: 10px;
+        }
+
+        /* ===== ASSESSMENT SECTION ===== */
+        .assess-item {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .assess-item:last-child { border-bottom: none; }
+
+        .assess-title-row {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .assess-title {
+            font-size: 13px; font-weight: 600; color: var(--text);
+        }
+
+        .assess-desc {
+            font-size: 11px; color: var(--text-muted);
+            line-height: 1.5; margin-bottom: 8px;
+        }
+
+        .assess-options {
+            display: flex; gap: 6px;
+        }
+
+        .assess-btn {
+            flex: 1; padding: 9px 6px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-xs);
+            background: white; cursor: pointer;
+            text-align: center; font-family: inherit;
+            font-size: 12px; font-weight: 600;
+            transition: all 0.2s; color: var(--text-secondary);
+        }
+
+        .assess-btn:active { transform: scale(0.96); }
+
+        .assess-btn.opt-pass.active {
+            border-color: var(--success); color: var(--success-dark);
+            background: var(--success-bg);
+        }
+        .assess-btn.opt-partial.active {
+            border-color: var(--warning); color: #B45309;
+            background: var(--warning-bg);
+        }
+        .assess-btn.opt-fail.active {
+            border-color: var(--danger); color: var(--danger-dark);
+            background: var(--danger-bg);
+        }
+        .assess-btn.opt-yes.active {
+            border-color: var(--primary); color: var(--primary);
+            background: var(--primary-bg);
+        }
+        .assess-btn.opt-no.active {
+            border-color: var(--text-muted); color: var(--text-secondary);
+            background: #F1F5F9;
+        }
+
+        .assess-detail {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .assess-detail.open { max-height: 1500px; }
+
+        .assess-detail-inner {
+            padding-top: 8px;
+        }
+
+        .assess-textarea {
+            width: 100%; padding: 8px 10px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-xs);
+            font-size: 13px; font-family: inherit;
+            resize: vertical; min-height: 50px;
+            background: #FAFBFC;
+        }
+        .assess-textarea:focus {
+            outline: none; border-color: var(--primary-light);
+        }
+
+        /* ===== ETHICS CHECKLIST ===== */
+        .ethics-group {
+            margin: 10px 0 6px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xs);
+            overflow: hidden;
+            background: white;
+        }
+
+        .ethics-group-header {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #F8FAFC, #EFF6FF);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ethics-group-badge {
+            width: 24px; height: 24px; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 800; color: white; flex-shrink: 0;
+        }
+
+        .badge-six { background: linear-gradient(135deg, #7C3AED, #8B5CF6); }
+        .badge-four-a { background: linear-gradient(135deg, #0891B2, #06B6D4); }
+
+        .ethics-group-label {
+            font-size: 12px; font-weight: 700; color: var(--text);
+        }
+
+        .ethics-checklist {
+            background: white;
+        }
+
+        .ethics-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.15s;
+        }
+
+        .ethics-row:last-child { border-bottom: none; }
+        .ethics-row:active { background: #F8FAFC; }
+
+        .ethics-num {
+            width: 22px; height: 22px; border-radius: 50%;
+            background: var(--border-light);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700; color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .ethics-info { flex: 1; min-width: 0; }
+
+        .ethics-name {
+            font-size: 13px; font-weight: 600; color: var(--text);
+            line-height: 1.3;
+        }
+
+        .ethics-eng {
+            font-size: 10px; color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .ethics-row .status-toggle { flex-shrink: 0; }
+
+        .ethics-row .st-btn {
+            width: 30px; height: 30px; font-size: 13px;
+        }
+
+        /* Ethics Summary */
+        .ethics-summary {
+            display: flex; gap: 8px; margin: 10px 0 6px;
+            padding: 8px 12px;
+            background: var(--border-light);
+            border-radius: var(--radius-xs);
+        }
+
+        .ethics-summary-row {
+            flex: 1; text-align: center;
+        }
+
+        .ethics-sum-label {
+            font-size: 10px; color: var(--text-muted); display: block;
+            font-weight: 500;
+        }
+
+        .ethics-sum-val {
+            font-size: 18px; font-weight: 800; color: var(--success);
+            display: block; margin-top: 2px;
+        }
+
+        .ethics-sum-val.issue { color: var(--danger); }
+        .ethics-sum-val.remain { color: var(--text-muted); }
+
+        /* Ethics note area */
+        .ethics-note-area {
+            margin-top: 8px;
+        }
+
+
+
+        /* ===== SUMMARY BAR ===== */
+        .summary-bar {
+            margin-bottom: 12px;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+        }
+
+        .summary-chip {
+            text-align: center; padding: 10px 6px;
+            border-radius: var(--radius-sm);
+            background: white; border: 1px solid var(--border);
+        }
+
+        .summary-chip .sc-num {
+            font-size: 22px; font-weight: 800; line-height: 1;
+        }
+
+        .summary-chip .sc-label {
+            font-size: 10px; color: var(--text-muted); margin-top: 3px;
+            font-weight: 500;
+        }
+
+        .summary-chip.chip-pass .sc-num   { color: var(--success); }
+        .summary-chip.chip-issue .sc-num  { color: var(--danger); }
+        .summary-chip.chip-remain .sc-num { color: var(--text-muted); }
+
+        /* ===== BOTTOM BAR ===== */
+        .bottom-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            padding: 10px 12px;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+            background: white;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+            z-index: 100;
+        }
+
+        .bottom-inner {
+            max-width: 540px; margin: 0 auto;
+            display: flex; gap: 8px;
+        }
+
+        .btn {
+            flex: 1; padding: 13px 16px; border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 700;
+            font-family: inherit; cursor: pointer;
+            transition: all 0.2s;
+            display: flex; align-items: center;
+            justify-content: center; gap: 6px;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0F52BA, #0A3A8A);
+            color: white;
+            box-shadow: 0 4px 12px rgba(10,58,138,0.3);
+        }
+
+        .btn-ghost {
+            background: var(--bg); color: var(--text-secondary);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-mask {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            z-index: 300;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s; padding: 20px;
+        }
+
+        .modal-mask.show { opacity: 1; pointer-events: auto; }
+
+        .modal-box {
+            background: white; border-radius: var(--radius);
+            padding: 28px 22px; max-width: 320px; width: 100%;
+            text-align: center;
+            transform: scale(0.92); transition: transform 0.3s;
+        }
+
+        .modal-mask.show .modal-box { transform: scale(1); }
+
+        .modal-emoji { font-size: 44px; margin-bottom: 10px; }
+
+        .modal-title {
+            font-size: 18px; font-weight: 700; margin-bottom: 6px;
+        }
+
+        .modal-desc {
+            font-size: 13px; color: var(--text-secondary);
+            margin-bottom: 16px; line-height: 1.5;
+        }
+
+        .modal-btn {
+            width: 100%; padding: 12px; border: none;
+            border-radius: var(--radius-sm);
+            font-size: 14px; font-weight: 700;
+            font-family: inherit; cursor: pointer;
+            margin-bottom: 6px;
+        }
+
+        .modal-btn.primary { background: linear-gradient(135deg, #0F52BA, #0A3A8A); color: white; }
+        .modal-btn.ghost { background: none; color: var(--text-muted); }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; top: 70px; left: 50%;
+            transform: translateX(-50%) translateY(-16px);
+            padding: 10px 20px; border-radius: var(--radius-sm);
+            font-size: 13px; font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            opacity: 0; z-index: 250;
+            transition: all 0.3s; pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.success { background: #065F46; color: white; }
+        .toast.warn { background: #92400E; color: white; }
+
+        /* ===== VERSION TAG ===== */
+        .version-tag {
+            text-align: center; font-size: 10px;
+            color: var(--text-muted); padding: 16px 0 4px;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-top">
+        <div class="header-icon">🏥</div>
+        <div>
+            <h1>ISITDOWN Round</h1>
+            <div class="header-sub">ตรวจเยี่ยมหอผู้ป่วยก่อนทำงาน + SHA + จริยธรรม</div>
+        </div>
+        <div class="header-time">
+            <div class="time-now" id="clockTime">--:--</div>
+            <div id="clockDate">กำลังโหลด...</div>
+        </div>
+    </div>
+    <div class="progress-strip">
+        <span class="label">ความคืบหน้า</span>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progFill"></div>
+        </div>
+        <span class="count" id="progCount">0/8</span>
+    </div>
+</header>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Main -->
+<main class="container">
+
+    <!-- Summary Bar -->
+    <div class="summary-bar" id="summaryBar">
+        <div class="summary-chip chip-pass">
+            <div class="sc-num" id="sumPass">0</div>
+            <div class="sc-label">✓ ผ่าน</div>
+        </div>
+        <div class="summary-chip chip-issue">
+            <div class="sc-num" id="sumIssue">0</div>
+            <div class="sc-label">⚠ พบปัญหา</div>
+        </div>
+        <div class="summary-chip chip-remain">
+            <div class="sc-num" id="sumRemain">8</div>
+            <div class="sc-label">◻ ยังไม่ประเมิน</div>
+        </div>
+    </div>
+
+    <!-- Card: ข้อมูลทั่วไป -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon blue">📋</div>
+            <div class="card-title">ข้อมูลทั่วไป</div>
+        </div>
+        <div class="card-body">
+            <div class="form-row c2">
+                <div class="form-group">
+                    <label class="form-label">วันที่ประเมิน</label>
+                    <input type="date" class="form-input" id="fDate">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ward / หอผู้ป่วย</label>
+                    <div class="search-select-container" id="fWardContainer">
+                        <input type="text" class="form-input" id="fWard" placeholder="ค้นหาหรือเลือกหอผู้ป่วย..." autocomplete="off" style="padding-right: 34px;">
+                        <svg class="arrow-icon" xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 4 4-4"/></svg>
+                        <div class="search-select-dropdown" id="fWardDropdown"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">เวร</label>
+                <div class="shift-picker">
+                    <button class="shift-chip morning" onclick="pickShift(this,'D')" data-shift="D">
+                        <span class="s-icon">🌅</span>
+                        <span class="s-name">เช้า (D)</span>
+                        <span class="s-time">08:00-16:00</span>
+                    </button>
+                    <button class="shift-chip evening" onclick="pickShift(this,'E')" data-shift="E">
+                        <span class="s-icon">🌇</span>
+                        <span class="s-name">บ่าย (E)</span>
+                        <span class="s-time">16:00-00:00</span>
+                    </button>
+                    <button class="shift-chip night" onclick="pickShift(this,'N')" data-shift="N">
+                        <span class="s-icon">🌙</span>
+                        <span class="s-name">ดึก (N)</span>
+                        <span class="s-time">00:00-08:00</span>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">ชื่อผู้ประเมิน</label>
+                <input type="text" class="form-input" id="fAssessor" placeholder="ชื่อ-สกุล ผู้ประเมิน">
+            </div>
+        </div>
+    </div>
+
+    <!-- Card: ISI DOWN Checklist -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon green">✅</div>
+            <div class="card-title">ISITDOWN Round — ประเมินทั้งหอผู้ป่วย</div>
+        </div>
+
+        <div class="round-item" data-round="identification">
+            <div class="round-row">
+                <div class="round-letter bg-I1">I</div>
+                <div class="round-info">
+                    <div class="round-name">Identification & Infection Control</div>
+                    <div class="round-desc">ตรวจสอบการระบุตัวตนผู้ป่วย และการควบคุมการติดเชื้อ</div>
+                </div>
+                <div class="status-toggle">
+                    <button class="st-btn pass-btn" onclick="setRoundStatus(this,'pass')" title="ผ่านทั้งหมด">✓</button>
+                    <button class="st-btn issue-btn" onclick="setRoundStatus(this,'issue')" title="พบปัญหา">!</button>
+                </div>
+            </div>
+            <div class="issue-panel">
+                <div class="issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 ปัญหาที่พบ</div>
+                            <textarea class="issue-note" placeholder="ระบุปัญหา..."></textarea>
+                    <div class="quick-tags-row">
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'ป้ายข้อมือเลือน')">ป้ายข้อมือเลือน</span>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="round-item" data-round="siderails">
+            <div class="round-row">
+                <div class="round-letter bg-S">S</div>
+                <div class="round-info">
+                    <div class="round-name">Side Rails</div>
+                    <div class="round-desc">ตรวจสอบราวกั้นเตียง ปรับให้เหมาะสม</div>
+                </div>
+                <div class="status-toggle">
+                    <button class="st-btn pass-btn" onclick="setRoundStatus(this,'pass')">✓</button>
+                    <button class="st-btn issue-btn" onclick="setRoundStatus(this,'issue')">!</button>
+                </div>
+            </div>
+            <div class="issue-panel">
+                <div class="issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 ปัญหาที่พบ</div>
+                            <textarea class="issue-note" placeholder="ระบุปัญหา..."></textarea>
+                    <div class="quick-tags-row">
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'ไม่ได้เอาข้างเตียงขึ้น')">ไม่ได้เอาข้างเตียงขึ้น</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'เตียงสูงไป')">เตียงสูงไป</span>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="round-item" data-round="ivfluid">
+            <div class="round-row">
+                <div class="round-letter bg-I2">I</div>
+                <div class="round-info">
+                    <div class="round-name">IV Fluid</div>
+                    <div class="round-desc">ตรวจสอบสารน้ำ อัตราการหยด ชนิดสารน้ำ</div>
+                </div>
+                <div class="status-toggle">
+                    <button class="st-btn pass-btn" onclick="setRoundStatus(this,'pass')">✓</button>
+                    <button class="st-btn issue-btn" onclick="setRoundStatus(this,'issue')">!</button>
+                </div>
+            </div>
+            <div class="issue-panel">
+                <div class="issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 ปัญหาที่พบ</div>
+                            <textarea class="issue-note" placeholder="ระบุปัญหา..."></textarea>
+                    <div class="quick-tags-row">
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'rate infusion ไม่ตรงกับป้ายสารน้ำ')">rate infusion ไม่ตรงกับป้ายสารน้ำ</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'สารน้ำไม่เข้าคู่กัน')">สารน้ำไม่เข้าคู่กัน</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'IV site หมดอายุ')">IV site หมดอายุ</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'IV site ปวด')">IV site ปวด</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'IV site แดง')">IV site แดง</span>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="round-item" data-round="tube">
+            <div class="round-row">
+                <div class="round-letter bg-T">T</div>
+                <div class="round-info">
+                    <div class="round-name">Tube</div>
+                    <div class="round-desc">ตรวจสอบท่อระบายต่างๆ (NG, Foley, Chest Drain ฯลฯ)</div>
+                </div>
+                <div class="status-toggle">
+                    <button class="st-btn pass-btn" onclick="setRoundStatus(this,'pass')">✓</button>
+                    <button class="st-btn issue-btn" onclick="setRoundStatus(this,'issue')">!</button>
+                </div>
+            </div>
+            <div class="issue-panel">
+                <div class="issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 ปัญหาที่พบ</div>
+                            <textarea class="issue-note" placeholder="ระบุปัญหา..."></textarea>
+                    <div class="quick-tags-row">
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'NG เลื่อน')">NG เลื่อน</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'ICD ใกล้เลื่อน')">ICD ใกล้เลื่อน</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'Foley ตึง')">Foley ตึง</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'Foley ใกล้พื้น')">Foley ใกล้พื้น</span>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="round-item" data-round="down">
+            <div class="round-row">
+                <div class="round-letter bg-D">D</div>
+                <div class="round-info">
+                    <div class="round-name">Down (Drainage)</div>
+                    <div class="round-desc">ตรวจสอบระบบระบาย ตำแหน่ง ปริมาณ ลักษณะ</div>
+                </div>
+                <div class="status-toggle">
+                    <button class="st-btn pass-btn" onclick="setRoundStatus(this,'pass')">✓</button>
+                    <button class="st-btn issue-btn" onclick="setRoundStatus(this,'issue')">!</button>
+                </div>
+            </div>
+            <div class="issue-panel">
+                <div class="issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 ปัญหาที่พบ</div>
+                            <textarea class="issue-note" placeholder="ระบุปัญหา..."></textarea>
+                        </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="round-item" data-round="oxygen">
+            <div class="round-row">
+                <div class="round-letter bg-O">O</div>
+                <div class="round-info">
+                    <div class="round-name">Oxygen</div>
+                    <div class="round-desc">ตรวจสอบระบบออกซิเจน อัตราการไหล SpO2</div>
+                </div>
+                <div class="status-toggle">
+                    <button class="st-btn pass-btn" onclick="setRoundStatus(this,'pass')">✓</button>
+                    <button class="st-btn issue-btn" onclick="setRoundStatus(this,'issue')">!</button>
+                </div>
+            </div>
+            <div class="issue-panel">
+                <div class="issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 ปัญหาที่พบ</div>
+                            <textarea class="issue-note" placeholder="ระบุปัญหา..."></textarea>
+                    <div class="quick-tags-row">
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'O2 Cannula ไม่ตรงจมูก')">O2 Cannula ไม่ตรงจมูก</span>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="round-item" data-round="waste">
+            <div class="round-row">
+                <div class="round-letter bg-W">W</div>
+                <div class="round-info">
+                    <div class="round-name">Waste</div>
+                    <div class="round-desc">ตรวจสอบขยะติดเชื้อ ขยะทั่วไป ความสะอาดบริเวณเตียง</div>
+                </div>
+                <div class="status-toggle">
+                    <button class="st-btn pass-btn" onclick="setRoundStatus(this,'pass')">✓</button>
+                    <button class="st-btn issue-btn" onclick="setRoundStatus(this,'issue')">!</button>
+                </div>
+            </div>
+            <div class="issue-panel">
+                <div class="issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 ปัญหาที่พบ</div>
+                            <textarea class="issue-note" placeholder="ระบุปัญหา..."></textarea>
+                    <div class="quick-tags-row">
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'ขยะจากหัตถการ')">ขยะจากหัตถการ</span>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="round-item" data-round="need">
+            <div class="round-row">
+                <div class="round-letter bg-N">N</div>
+                <div class="round-info">
+                    <div class="round-name">Need</div>
+                    <div class="round-desc">สอบถามความต้องการของผู้ป่วย อาการเจ็บปวด</div>
+                </div>
+                <div class="status-toggle">
+                    <button class="st-btn pass-btn" onclick="setRoundStatus(this,'pass')">✓</button>
+                    <button class="st-btn issue-btn" onclick="setRoundStatus(this,'issue')">!</button>
+                </div>
+            </div>
+            <div class="issue-panel">
+                <div class="issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 ปัญหาที่พบ</div>
+                            <textarea class="issue-note" placeholder="ระบุปัญหา..."></textarea>
+                    <div class="quick-tags-row">
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'อยากกลับบ้าน')">อยากกลับบ้าน</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'อยากได้ใบรับรองแพทย์')">อยากได้ใบรับรองแพทย์</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'อยากได้ยาแก้ปวด')">อยากได้ยาแก้ปวด</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'นอนไม่หลับ')">นอนไม่หลับ</span>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card: การประเมินด้านจิตวิญญาณ -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon purple" style="background:#F3E8FF; color:#9333EA;">🙏</div>
+            <div class="card-title">Need Spiritual Approach</div>
+        </div>
+        <div class="assess-item" data-assess="spiritual" style="border:none; padding:0; margin-bottom:0;">
+            <div class="assess-desc">มีความกังวล/กลัว/อยาก/อยากให้ช่วยเหลืออะไรเพิ่มเติมนอกจากการ รักษา/อยากกลับวัด/รู้สึกไม่สบายใจ/มีห่วง (กิน/อยู่/นอน/หลับ)
+</div>
+            <div class="assess-options">
+                <button class="assess-btn opt-yes" onclick="pickAssess(this,'spiritual','yes')">มี</button>
+                <button class="assess-btn opt-no" onclick="pickAssess(this,'spiritual','no')">ไม่มี</button>
+            </div>
+            <div class="assess-detail" id="det-spiritual">
+                <div class="assess-detail-inner issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 รายละเอียดเพิ่มเติม</div>
+                            <textarea class="assess-textarea issue-note" placeholder="เช่น ผู้ป่วยต้องการพบพระ..."></textarea>
+                            <div class="quick-tags-row">
+                        <div class="quick-tags-group-label">กังวล:</div>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'กังวล: แผนการรักษา')">แผนการรักษา</span>
+                        
+                        <div class="quick-tags-group-label">กิน:</div>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'กิน: อาหารไม่อร่อย')">อาหารไม่อร่อย</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'กิน: ฟันไม่แข็งแรง')">ฟันไม่แข็งแรง</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'กิน: ท้องอืด')">ท้องอืด</span>
+                        
+                        <div class="quick-tags-group-label">อยู่:</div>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'อยู่: เตียงแข็งไป')">เตียงแข็งไป</span>
+                        <span class="quick-tag-chip" onclick="appendQuickNote(this, 'อยู่: อยากย้ายเตียง')">อยากย้ายเตียง</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Card: ประเด็นทางจริยธรรม -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon" style="background:#FEF2F2; color:#DC2626;">⚠️</div>
+            <div class="card-title">ประเด็นความเสี่ยงและขัดแย้งทางจริยธรรม</div>
+        </div>
+        <div class="assess-item" data-assess="ethics_risk">
+            <div class="assess-title-row">
+                <span>⚠️</span>
+                <span class="assess-title">ความเสี่ยงทางจริยธรรม</span>
+            </div>
+            <div class="assess-desc">มีประเด็นที่ผู้รับบริการมองเรา/รู้สึกว่ากำลังได้รับการบริการ ที่ไม่สอดคล้องกับหลักจริยธรรม?</div>
+            <div class="assess-options">
+                <button class="assess-btn opt-yes" onclick="pickAssess(this,'ethics_risk','yes')">มี</button>
+                <button class="assess-btn opt-no" onclick="pickAssess(this,'ethics_risk','no')">ไม่มี</button>
+            </div>
+            <div class="assess-detail" id="det-ethics_risk">
+                <div class="assess-detail-inner issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 รายละเอียดเพิ่มเติม</div>
+                            <textarea class="assess-textarea issue-note" placeholder="ระบุรายละเอียด..."></textarea>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="assess-item" data-assess="ethics_conflict">
+            <div class="assess-title-row">
+                <span>⚡</span>
+                <span class="assess-title">ความขัดแย้งทางจริยธรรม</span>
+            </div>
+            <div class="assess-desc">มีกรณีที่เรารู้สึกต้องตัดสินใจเลือกทำในสิ่งใดสิ่งหนึ่งในหลายทางเลือกที่มีอยู่ ไม่ว่าเลือกทางไหนจะมีข้อดีและข้อเสีย?</div>
+            <div class="assess-options">
+                <button class="assess-btn opt-yes" onclick="pickAssess(this,'ethics_conflict','yes')">มี</button>
+                <button class="assess-btn opt-no" onclick="pickAssess(this,'ethics_conflict','no')">ไม่มี</button>
+            </div>
+            <div class="assess-detail" id="det-ethics_conflict">
+                <div class="assess-detail-inner issue-panel-inner">
+                    <div class="bed-issues-list">
+                        <div class="bed-issue-item">
+                            <div class="bed-issue-header">
+                                <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                                <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                            </div>
+                            <div class="issue-label" style="margin-top:8px;">📝 รายละเอียดเพิ่มเติม</div>
+                            <textarea class="assess-textarea issue-note" placeholder="ระบุรายละเอียด..."></textarea>
+                        </div>
+                    </div>
+                    <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card: พฤติกรรมจริยธรรม -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon" style="background:#ECFDF5; color:#059669;">⚖️</div>
+            <div class="card-title">พฤติกรรมจริยธรรม (คิดดี พูดดี ทำดี)</div>
+        </div>
+        <div class="assess-item" data-assess="ethics" style="border:none; padding:0; margin-bottom:0;">
+            <div class="assess-desc">ประเมินหลักจริยธรรม (6+4+4) ตามมาตรฐาน SHA — เลือก ✓ หากปฏิบัติได้ หรือ ! หากพบปัญหา</div>
+
+            <!-- กลุ่มที่ 1: หลักจริยธรรม 6 ข้อ -->
+            <div class="ethics-group">
+                <div class="ethics-group-header">
+                    <span class="ethics-group-badge badge-six">6</span>
+                    <span class="ethics-group-label">หลักจริยธรรม (Ethical Principles)</span>
+                </div>
+                <div class="ethics-checklist">
+                    <div class="ethics-row" data-ethic="autonomy">
+                        <div class="ethics-num">1</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">การเคารพเอกสิทธิ์</div>
+                            <div class="ethics-eng">Autonomy</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'autonomy','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'autonomy','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                    <div class="ethics-row" data-ethic="beneficence">
+                        <div class="ethics-num">2</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">การทำประโยชน์</div>
+                            <div class="ethics-eng">Beneficence</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'beneficence','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'beneficence','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                    <div class="ethics-row" data-ethic="nonmaleficence">
+                        <div class="ethics-num">3</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">การไม่ทำอันตราย</div>
+                            <div class="ethics-eng">Non-maleficence</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'nonmaleficence','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'nonmaleficence','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                    <div class="ethics-row" data-ethic="justice">
+                        <div class="ethics-num">4</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">ความยุติธรรม</div>
+                            <div class="ethics-eng">Justice</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'justice','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'justice','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                    <div class="ethics-row" data-ethic="veracity">
+                        <div class="ethics-num">5</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">การบอกความจริง</div>
+                            <div class="ethics-eng">Veracity</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'veracity','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'veracity','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                    <div class="ethics-row" data-ethic="fidelity">
+                        <div class="ethics-num">6</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">ความซื่อสัตย์</div>
+                            <div class="ethics-eng">Fidelity</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'fidelity','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'fidelity','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- กลุ่มที่ 2: หลักจริยธรรม 4 ข้อ (1) -->
+            <div class="ethics-group">
+                <div class="ethics-group-header">
+                    <span class="ethics-group-badge badge-four-a">4</span>
+                    <span class="ethics-group-label">จริยธรรมวิชาชีพ (Professional Ethics)</span>
+                </div>
+                <div class="ethics-checklist">
+                    <div class="ethics-row" data-ethic="advocacy">
+                        <div class="ethics-num">1</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">การทำหน้าที่แทน</div>
+                            <div class="ethics-eng">Advocacy</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'advocacy','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'advocacy','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                    <div class="ethics-row" data-ethic="accountability">
+                        <div class="ethics-num">2</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">ความรับผิดชอบ</div>
+                            <div class="ethics-eng">Accountability</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'accountability','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'accountability','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                    <div class="ethics-row" data-ethic="cooperation">
+                        <div class="ethics-num">3</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">ความร่วมมือ</div>
+                            <div class="ethics-eng">Cooperation</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'cooperation','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'cooperation','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                    <div class="ethics-row" data-ethic="caring">
+                        <div class="ethics-num">4</div>
+                        <div class="ethics-info">
+                            <div class="ethics-name">ความเอื้ออาทร</div>
+                            <div class="ethics-eng">Caring</div>
+                        </div>
+                        <div class="status-toggle">
+                            <button class="st-btn pass-btn" onclick="setEthicStatus(this,'caring','pass')" title="ผ่าน">✓</button>
+                            <button class="st-btn issue-btn" onclick="setEthicStatus(this,'caring','issue')" title="พบปัญหา">!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- สรุปจริยธรรม -->
+            <div class="ethics-summary" id="ethicsSummary">
+                <div class="ethics-summary-row">
+                    <span class="ethics-sum-label">✓ ผ่าน</span>
+                    <span class="ethics-sum-val" id="ethicsPassCount">0</span>
+                </div>
+                <div class="ethics-summary-row">
+                    <span class="ethics-sum-label">⚠ พบปัญหา</span>
+                    <span class="ethics-sum-val issue" id="ethicsIssueCount">0</span>
+                </div>
+                <div class="ethics-summary-row">
+                    <span class="ethics-sum-label">◻ ยังไม่ประเมิน</span>
+                    <span class="ethics-sum-val remain" id="ethicsRemainCount">10</span>
+                </div>
+            </div>
+
+            <!-- หมายเหตุ -->
+            <div class="ethics-note-area issue-panel-inner">
+                <div class="bed-issues-list">
+                    <div class="bed-issue-item">
+                        <div class="bed-issue-header">
+                            <span class="issue-label" style="margin-bottom:0;">⚠️ เตียง</span>
+                            <input type="text" class="bed-num-input" placeholder="เลขเตียง" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                            <button class="btn-remove-issue" onclick="removeBedIssue(this)">✕</button>
+                        </div>
+                        <div class="issue-label" style="margin-top:8px;">📝 หมายเหตุจริยธรรม (ถ้ามี)</div>
+                        <textarea class="assess-textarea issue-note" placeholder="ระบุรายละเอียดปัญหาจริยธรรมที่พบ..."></textarea>
+                    </div>
+                </div>
+                <button class="btn-add-bed" onclick="addBedIssue(this)">+ เพิ่มเตียงอื่น</button>
+            </div>
+    </div>
+    </div>
+
+
+
+    <div class="version-tag">Version 3 · Update 10 พฤษภาคม 2569</div>
+</main>
+
+<!-- Bottom Bar -->
+<div class="bottom-bar">
+    <div class="bottom-inner">
+        <button class="btn btn-ghost" onclick="resetAll()">🔄 ล้างข้อมูล</button>
+        <button class="btn btn-primary" onclick="submitForm()">💾 บันทึกข้อมูล</button>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-mask" id="modalSuccess">
+    <div class="modal-box">
+        <div class="modal-emoji">✅</div>
+        <div class="modal-title">บันทึกสำเร็จ!</div>
+        <div class="modal-desc" id="modalDesc">ข้อมูลการตรวจเยี่ยมหอผู้ป่วยถูกบันทึกแล้ว</div>
+        <button class="modal-btn primary" onclick="closeModal(); resetAll();">เริ่มรอบใหม่</button>
+        <button class="modal-btn ghost" onclick="closeModal()">ปิด</button>
+    </div>
+</div>
+
+<script>
+// ===== STATE =====
+const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_WEB_APP_URL_HERE"; // นำ Web App URL ของ Google Script มาใส่ตรงนี้
+const TOTAL_ROUNDS = 8;
+const TOTAL_ETHICS = 10;
+const roundStatuses = {};
+const assessStatuses = {};
+const ethicStatuses = {};
+
+// ===== WARD DATA =====
+const wardData = {
+    'กุมารเวชกรรม': [
+        'หอผู้ป่วยกุมารเวชกรรม 1','หอผู้ป่วยกุมารเวชกรรม 2','หอผู้ป่วยกุมารเวชกรรม 3',
+        'หอผู้ป่วยกุมารเวชกรรม 4','หอผู้ป่วยกุมารเวชกรรม 5',
+        'หอผู้ป่วยหนักกุมารเวชกรรม (PICU)','หอผู้ป่วยหนักกุมารเวชกรรมโรคหัวใจ',
+        'หอผู้ป่วยทารกแรกเกิด 2','หอผู้ป่วยวิกฤตทารกแรกเกิด (NICU)',
+        'หอผู้ป่วยหนักทารกแรกเกิด 1','หอผู้ป่วยหนักทารกแรกเกิด 2'
+    ],
+    'อายุรศาสตร์': [
+        'หอผู้ป่วยอายุรกรรมชาย 1','หอผู้ป่วยอายุรกรรมชาย 2','หอผู้ป่วยอายุรกรรมชาย 3',
+        'หอผู้ป่วยอายุรกรรมหญิง 1','หอผู้ป่วยอายุรกรรมหญิง 2','หอผู้ป่วยอายุรกรรมหญิง 3',
+        'หอผู้ป่วยวิกฤตอายุรกรรม 1 (MICU1)','หอผู้ป่วยวิกฤตอายุรกรรม 2 (MICU2)',
+        'หอผู้ป่วยหนักอายุรกรรม','หอผู้ป่วยวิกฤติโรคหลอดเลือดสมอง (Stroke Unit)',
+        'หอผู้ป่วยหนักโรคหัวใจและหลอดเลือด 1 (CCU1)','หอผู้ป่วยหนักโรคหัวใจและหลอดเลือด 2 (CCU2)',
+        'หอผู้ป่วยโรคปอด','หอผู้ป่วยเคมีบำบัด',
+        'หอผู้ป่วยปลูกถ่ายไขกระดูกและเคมีบำบัดขนาดสูง','หน่วยผู้ป่วยพึ่งพาเครื่องช่วยหายใจ'
+    ],
+    'ศัลยศาสตร์': [
+        'หอผู้ป่วยศัลยกรรมชาย 1','หอผู้ป่วยศัลยกรรมชาย 2','หอผู้ป่วยศัลยกรรมชาย 3',
+        'หอผู้ป่วยศัลยกรรมหญิง 1','หอผู้ป่วยศัลยกรรมหญิง 2','หอผู้ป่วยศัลยกรรมหญิง 3',
+        'หอผู้ป่วยวิกฤตศัลยกรรมอุบัติเหตุ (Trauma ICU)','หอผู้ป่วยวิกฤตศัลยกรรมประสาท (Neuro ICU)',
+        'หอผู้ป่วยศัลยกรรมประสาท','หอผู้ป่วยศัลยกรรมทรวงอก หัวใจ และหลอดเลือด (CVT Ward)',
+        'หอผู้ป่วยวิกฤตศัลยกรรมทรวงอก หัวใจ (CVT ICU)','หอผู้ป่วยไฟไหม้ น้ำร้อนลวก (Burn Unit)',
+        'หอผู้ป่วยวิกฤตศัลยกรรมฉุกเฉิน','หอผู้ป่วยหนักศัลยกรรมทั่วไป (SICU)'
+    ],
+    'สูติ-นรีเวช': ['หอผู้ป่วยสูติกรรม-นรีเวชกรรม','ห้องคลอด','หอผู้ป่วยหลังคลอด'],
+    'ออร์โธปิดิกส์': ['หอผู้ป่วยออร์โธปิดิกส์'],
+    'จักษุ / โสต ศอ นาสิก / จิตเวช': [
+        'หอผู้ป่วยจักษุ 1','หอผู้ป่วยจักษุ 2',
+        'หอผู้ป่วยโสต 1','หอผู้ป่วยโสต 2','หอผู้ป่วยจิตเวชผู้ใหญ่'
+    ],
+    'อื่นๆ': [
+        'หอผู้ป่วยสงฆ์อาพาธ 1','หอผู้ป่วยสงฆ์อาพาธ 2','หอผู้ป่วยฟื้นฟูสภาพ',
+        'งานอุบัติเหตุและฉุกเฉิน (ER)','ห้องผ่าตัด'
+    ],
+    'หอผู้ป่วยพิเศษ': [
+        'หอผู้ป่วยพิเศษสุจิณโณ ชั้น 3','หอผู้ป่วยพิเศษสุจิณโณ ชั้น 12',
+        'หอผู้ป่วยพิเศษสุจิณโณ ชั้น 13','หอผู้ป่วยพิเศษสุจิณโณ ชั้น 14',
+        'หอผู้ป่วยพิเศษบุญสม ชั้น 7','หอผู้ป่วยพิเศษบุญสม ชั้น 8'
+    ]
+};
+
+function initWardDropdown() {
+    const fWardInput = document.getElementById('fWard');
+    const dropdown = document.getElementById('fWardDropdown');
+    const container = document.getElementById('fWardContainer');
+    if (!fWardInput || !dropdown || !container) return;
+
+    let activeOptionIndex = -1;
+
+    // Build the dropdown HTML
+    dropdown.innerHTML = '';
+    
+    for (const [dept, wards] of Object.entries(wardData)) {
+        const groupHeader = document.createElement('div');
+        groupHeader.className = 'search-select-group-header';
+        groupHeader.textContent = dept;
+        dropdown.appendChild(groupHeader);
+        
+        wards.forEach(ward => {
+            const option = document.createElement('div');
+            option.className = 'search-select-option';
+            option.textContent = ward;
+            option.dataset.value = ward;
+            
+            option.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                selectWard(ward);
+            });
+            
+            dropdown.appendChild(option);
+        });
+    }
+
+    // Toggle dropdown on focus / click
+    fWardInput.addEventListener('focus', () => {
+        openDropdown();
+    });
+
+    fWardInput.addEventListener('click', () => {
+        openDropdown();
+    });
+
+    // Close dropdown on blur
+    fWardInput.addEventListener('blur', () => {
+        closeDropdown();
+    });
+
+    // Search filter
+    fWardInput.addEventListener('input', () => {
+        filterWards();
+    });
+
+    // Keyboard navigation
+    fWardInput.addEventListener('keydown', (e) => {
+        const visibleOptions = Array.from(dropdown.querySelectorAll('.search-select-option')).filter(opt => opt.style.display !== 'none');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (!container.classList.contains('open')) {
+                openDropdown();
+                return;
+            }
+            activeOptionIndex = (activeOptionIndex + 1) % visibleOptions.length;
+            highlightOption(visibleOptions);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (!container.classList.contains('open')) {
+                openDropdown();
+                return;
+            }
+            activeOptionIndex = (activeOptionIndex - 1 + visibleOptions.length) % visibleOptions.length;
+            highlightOption(visibleOptions);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (activeOptionIndex >= 0 && activeOptionIndex < visibleOptions.length) {
+                selectWard(visibleOptions[activeOptionIndex].dataset.value);
+            } else if (visibleOptions.length > 0) {
+                selectWard(visibleOptions[0].dataset.value);
+            }
+        } else if (e.key === 'Escape') {
+            closeDropdown();
+        }
+    });
+
+    function openDropdown() {
+        container.classList.add('open');
+        dropdown.classList.add('open');
+        filterWards();
+    }
+
+    function closeDropdown() {
+        container.classList.remove('open');
+        dropdown.classList.remove('open');
+        activeOptionIndex = -1;
+        
+        dropdown.querySelectorAll('.search-select-option').forEach(opt => opt.classList.remove('highlighted'));
+        
+        const val = fWardInput.value.trim();
+        let isValid = false;
+        for (const [dept, wards] of Object.entries(wardData)) {
+            if (wards.includes(val)) {
+                isValid = true;
+                break;
+            }
+        }
+        if (!isValid && val !== '') {
+            fWardInput.value = '';
+            toast('⚠️ กรุณาเลือกหอผู้ป่วยจากรายการที่กำหนด', 'warn');
+        }
+    }
+
+    function selectWard(value) {
+        fWardInput.value = value;
+        closeDropdown();
+        fWardInput.blur();
+    }
+
+    function highlightOption(options) {
+        dropdown.querySelectorAll('.search-select-option').forEach(opt => opt.classList.remove('highlighted'));
+        if (options[activeOptionIndex]) {
+            options[activeOptionIndex].classList.add('highlighted');
+            options[activeOptionIndex].scrollIntoView({ block: 'nearest' });
+        }
+    }
+
+    function filterWards() {
+        const query = fWardInput.value.trim().toLowerCase();
+        let currentHeader = null;
+        let visibleOptionsInGroup = 0;
+        
+        const children = Array.from(dropdown.children);
+        
+        children.forEach(child => {
+            if (child.classList.contains('search-select-group-header')) {
+                if (currentHeader && visibleOptionsInGroup === 0) {
+                    currentHeader.style.display = 'none';
+                }
+                currentHeader = child;
+                currentHeader.style.display = 'block';
+                visibleOptionsInGroup = 0;
+            } else if (child.classList.contains('search-select-option')) {
+                const text = child.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    child.style.display = 'block';
+                    visibleOptionsInGroup++;
+                } else {
+                    child.style.display = 'none';
+                }
+            }
+        });
+        
+        if (currentHeader && visibleOptionsInGroup === 0) {
+            currentHeader.style.display = 'none';
+        }
+        
+        activeOptionIndex = -1;
+    }
+}
+
+// ===== QUICK ADD HELPER =====
+function appendQuickNote(chip, text) {
+    const parent = chip.closest('.bed-issue-item') || chip.closest('.assess-detail-inner');
+    if (!parent) return;
+    const textarea = parent.querySelector('textarea');
+    if (!textarea) return;
+    const val = textarea.value.trim();
+    if (val) {
+        textarea.value = val + ', ' + text;
+    } else {
+        textarea.value = text;
+    }
+    textarea.focus();
+}
+
+// ===== CLOCK =====
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clockTime').textContent =
+        now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', hour12: false });
+    document.getElementById('clockDate').textContent =
+        now.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+    initWardDropdown();
+    document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
+    const h = new Date().getHours();
+    if (h >= 8 && h < 16) pickShift(document.querySelector('[data-shift="D"]'), 'D');
+    else if (h >= 16) pickShift(document.querySelector('[data-shift="E"]'), 'E');
+    else pickShift(document.querySelector('[data-shift="N"]'), 'N');
+    refreshSummary();
+});
+
+// ===== SHIFT =====
+let selectedShift = null;
+function pickShift(btn, s) {
+    document.querySelectorAll('.shift-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedShift = s;
+}
+
+// ===== ROUND STATUS =====
+function setRoundStatus(btn, status) {
+    const item = btn.closest('.round-item');
+    const key = item.dataset.round;
+    const passBtn = item.querySelector('.pass-btn');
+    const issueBtn = item.querySelector('.issue-btn');
+    const panel = item.querySelector('.issue-panel');
+
+    // Toggle off if same button pressed again
+    if (roundStatuses[key] === status) {
+        delete roundStatuses[key];
+        passBtn.classList.remove('active');
+        issueBtn.classList.remove('active');
+        panel.classList.remove('open');
+        refreshSummary();
+        return;
+    }
+
+    roundStatuses[key] = status;
+    passBtn.classList.toggle('active', status === 'pass');
+    issueBtn.classList.toggle('active', status === 'issue');
+
+    if (status === 'issue') {
+        panel.classList.add('open');
+        // Focus on issue note after opening
+        setTimeout(() => {
+            const input = panel.querySelector('.bed-num-input');
+            if (input) input.focus();
+        }, 350);
+    } else {
+        panel.classList.remove('open');
+    }
+
+    refreshSummary();
+}
+
+// ===== BED ISSUES =====
+function addBedIssue(btn) {
+    const panelInner = btn.closest('.issue-panel-inner');
+    const list = panelInner.querySelector('.bed-issues-list');
+    const firstItem = list.querySelector('.bed-issue-item');
+    const newItem = firstItem.cloneNode(true);
+    newItem.querySelector('.bed-num-input').value = '';
+    newItem.querySelector('.issue-note').value = '';
+    list.appendChild(newItem);
+    newItem.querySelector('.bed-num-input').focus();
+}
+
+function removeBedIssue(btn) {
+    const item = btn.closest('.bed-issue-item');
+    const list = item.parentElement;
+    if (list.querySelectorAll('.bed-issue-item').length > 1) {
+        item.remove();
+    } else {
+        item.querySelector('.bed-num-input').value = '';
+        item.querySelector('.issue-note').value = '';
+    }
+}
+
+// ===== ASSESS =====
+function pickAssess(btn, key, val) {
+    const item = btn.closest('.assess-item');
+    const btns = item.querySelectorAll('.assess-btn');
+    const detail = document.getElementById('det-' + key);
+
+    // Toggle off
+    if (assessStatuses[key] === val) {
+        delete assessStatuses[key];
+        btns.forEach(b => b.classList.remove('active'));
+        detail.classList.remove('open');
+        return;
+    }
+
+    assessStatuses[key] = val;
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Show detail for certain values
+    const showDetail = (['spiritual', 'ethics_risk', 'ethics_conflict'].includes(key) && val === 'yes');
+
+    if (showDetail) {
+        detail.classList.add('open');
+    } else {
+        detail.classList.remove('open');
+    }
+}
+
+// ===== ETHICS CHECKLIST =====
+function setEthicStatus(btn, key, status) {
+    const row = btn.closest('.ethics-row');
+    const passBtn = row.querySelector('.pass-btn');
+    const issueBtn = row.querySelector('.issue-btn');
+
+    // Toggle off if same button pressed again
+    if (ethicStatuses[key] === status) {
+        delete ethicStatuses[key];
+        passBtn.classList.remove('active');
+        issueBtn.classList.remove('active');
+        refreshEthicsSummary();
+        return;
+    }
+
+    ethicStatuses[key] = status;
+    passBtn.classList.toggle('active', status === 'pass');
+    issueBtn.classList.toggle('active', status === 'issue');
+    refreshEthicsSummary();
+}
+
+function refreshEthicsSummary() {
+    const pass = Object.values(ethicStatuses).filter(v => v === 'pass').length;
+    const issue = Object.values(ethicStatuses).filter(v => v === 'issue').length;
+    const remain = TOTAL_ETHICS - pass - issue;
+
+    document.getElementById('ethicsPassCount').textContent = pass;
+    document.getElementById('ethicsIssueCount').textContent = issue;
+    document.getElementById('ethicsRemainCount').textContent = remain;
+}
+
+// ===== SUMMARY =====
+function refreshSummary() {
+    const pass = Object.values(roundStatuses).filter(v => v === 'pass').length;
+    const issue = Object.values(roundStatuses).filter(v => v === 'issue').length;
+    const remain = TOTAL_ROUNDS - pass - issue;
+    const total = pass + issue;
+
+    document.getElementById('sumPass').textContent = pass;
+    document.getElementById('sumIssue').textContent = issue;
+    document.getElementById('sumRemain').textContent = remain;
+
+    document.getElementById('progCount').textContent = `${total}/${TOTAL_ROUNDS}`;
+    document.getElementById('progFill').style.width = `${(total / TOTAL_ROUNDS) * 100}%`;
+}
+
+
+
+// ===== SUBMIT =====
+function submitForm() {
+    const date = document.getElementById('fDate').value;
+    const ward = document.getElementById('fWard').value.trim();
+    const assessor = document.getElementById('fAssessor').value.trim();
+
+    if (!date || !selectedShift) return toast('⚠️ กรุณาเลือกวันที่และเวร', 'warn');
+    if (!ward) return toast('⚠️ กรุณาระบุ Ward / หอผู้ป่วย', 'warn');
+    if (!assessor) return toast('⚠️ กรุณาระบุชื่อผู้ประเมิน', 'warn');
+
+    const evaluated = Object.keys(roundStatuses).length;
+    if (evaluated < TOTAL_ROUNDS) {
+        if (!confirm(`ยังมี ${TOTAL_ROUNDS - evaluated} รายการที่ยังไม่ประเมิน ต้องการบันทึกหรือไม่?`)) return;
+    }
+
+    // Collect issue details
+    const issues = {};
+    document.querySelectorAll('.round-item').forEach(item => {
+        const key = item.dataset.round;
+        if (roundStatuses[key] === 'issue') {
+            const problems = [];
+            item.querySelectorAll('.bed-issue-item').forEach(issueItem => {
+                const bed = issueItem.querySelector('.bed-num-input').value.trim();
+                const note = issueItem.querySelector('.issue-note').value.trim();
+                if (bed || note) {
+                    problems.push({ bed, note });
+                }
+            });
+            issues[key] = problems;
+        }
+    });
+
+    // Collect assess notes
+    const assessNotes = {};
+    
+    const spIssues = [];
+    document.querySelectorAll('#det-spiritual .bed-issue-item').forEach(item => {
+        const bed = item.querySelector('.bed-num-input').value.trim();
+        const note = item.querySelector('.issue-note').value.trim();
+        if (bed || note) spIssues.push({ bed, note });
+    });
+    if (spIssues.length > 0) assessNotes['spiritual'] = spIssues;
+
+    const erIssues = [];
+    document.querySelectorAll('#det-ethics_risk .bed-issue-item').forEach(item => {
+        const bed = item.querySelector('.bed-num-input').value.trim();
+        const note = item.querySelector('.issue-note').value.trim();
+        if (bed || note) erIssues.push({ bed, note });
+    });
+    if (erIssues.length > 0) assessNotes['ethics_risk'] = erIssues;
+
+    const ecIssues = [];
+    document.querySelectorAll('#det-ethics_conflict .bed-issue-item').forEach(item => {
+        const bed = item.querySelector('.bed-num-input').value.trim();
+        const note = item.querySelector('.issue-note').value.trim();
+        if (bed || note) ecIssues.push({ bed, note });
+    });
+    if (ecIssues.length > 0) assessNotes['ethics_conflict'] = ecIssues;
+
+    const etIssues = [];
+    document.querySelectorAll('.ethics-note-area .bed-issue-item').forEach(item => {
+        const bed = item.querySelector('.bed-num-input').value.trim();
+        const note = item.querySelector('.issue-note').value.trim();
+        if (bed || note) etIssues.push({ bed, note });
+    });
+    if (etIssues.length > 0) assessNotes['ethics'] = etIssues;
+
+    const record = {
+        date, shift: selectedShift, ward, assessor,
+        roundStatuses: { ...roundStatuses },
+        issues,
+        assessStatuses: { ...assessStatuses },
+        ethicStatuses: { ...ethicStatuses },
+        assessNotes,
+        timestamp: new Date().toISOString()
+    };
+
+    // เช็คว่ามีการตั้งค่า Google Script URL หรือไม่
+    if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "YOUR_GOOGLE_WEB_APP_URL_HERE") {
+        toast('⏳ กำลังบันทึกข้อมูล...', 'success');
+        const submitBtn = document.querySelector('.btn-primary');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '⏳ กำลังบันทึก...';
+        submitBtn.disabled = true;
+
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(record),
+            // redirect: "follow" สำคัญมากสำหรับ Google Apps Script
+            redirect: "follow",
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            
+            if (data.result === 'success') {
+                showSuccessModal();
+            } else {
+                toast('❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล', 'warn');
+                console.error(data.error);
+            }
+        })
+        .catch(err => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            toast('❌ เกิดข้อผิดพลาดในการเชื่อมต่อ', 'warn');
+            console.error(err);
+        });
+    } else {
+        // Save to localStorage as fallback
+        const records = JSON.parse(localStorage.getItem('isidown_records') || '[]');
+        records.push(record);
+        localStorage.setItem('isidown_records', JSON.stringify(records));
+        console.log('Saved to LocalStorage:', record);
+        showSuccessModal();
+    }
+}
+
+function showSuccessModal() {
+    const issueCount = Object.values(roundStatuses).filter(v => v === 'issue').length;
+    const desc = issueCount > 0
+        ? `บันทึกแล้ว — พบปัญหา ${issueCount} รายการ`
+        : 'บันทึกแล้ว — ผ่านทุกรายการ ✓';
+    document.getElementById('modalDesc').textContent = desc;
+    document.getElementById('modalSuccess').classList.add('show');
+}
+
+// ===== RESET =====
+function resetAll() {
+    if (document.getElementById('modalSuccess').classList.contains('show')) {
+        // If coming from modal, don't confirm
+    } else {
+        if (!confirm('ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?')) return;
+    }
+
+    // Clear round statuses
+    Object.keys(roundStatuses).forEach(k => delete roundStatuses[k]);
+    document.querySelectorAll('.round-item').forEach(item => {
+        item.querySelectorAll('.st-btn').forEach(b => b.classList.remove('active'));
+        item.querySelector('.issue-panel').classList.remove('open');
+        const list = item.querySelector('.bed-issues-list');
+        if (list) {
+            const issues = list.querySelectorAll('.bed-issue-item');
+            issues.forEach((issue, index) => {
+                if (index > 0) {
+                    issue.remove();
+                } else {
+                    issue.querySelector('.bed-num-input').value = '';
+                    issue.querySelector('.issue-note').value = '';
+                }
+            });
+        }
+    });
+
+    // Clear assess
+    Object.keys(assessStatuses).forEach(k => delete assessStatuses[k]);
+    document.querySelectorAll('.assess-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.assess-detail').forEach(d => d.classList.remove('open'));
+    
+    ['#det-spiritual', '#det-ethics_risk', '#det-ethics_conflict', '.ethics-note-area'].forEach(selector => {
+        const list = document.querySelector(selector + ' .bed-issues-list');
+        if (list) {
+            const issues = list.querySelectorAll('.bed-issue-item');
+            issues.forEach((issue, index) => {
+                if (index > 0) {
+                    issue.remove();
+                } else {
+                    issue.querySelector('.bed-num-input').value = '';
+                    issue.querySelector('.issue-note').value = '';
+                }
+            });
+        }
+    });
+
+    // Clear ethics checklist
+    Object.keys(ethicStatuses).forEach(k => delete ethicStatuses[k]);
+    document.querySelectorAll('.ethics-row .st-btn').forEach(b => b.classList.remove('active'));
+    refreshEthicsSummary();
+
+    refreshSummary();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast('🔄 ล้างข้อมูลเรียบร้อย', 'success');
+}
+
+function closeModal() {
+    document.getElementById('modalSuccess').classList.remove('show');
+}
+
+// ===== TOAST =====
+function toast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
