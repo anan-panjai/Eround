@@ -828,9 +828,276 @@
             color: var(--text-muted); padding: 16px 0 4px;
             letter-spacing: 0.3px;
         }
+
+        /* ===== LOGIN SCREEN & SECURITY ===== */
+        body.not-logged-in .header,
+        body.not-logged-in main.container,
+        body.not-logged-in .bottom-bar {
+            display: none !important;
+        }
+
+        #login-screen {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at top left, #1e3a8a, #0f172a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        #login-screen.fade-out {
+            opacity: 0;
+            transform: scale(0.96);
+            pointer-events: none;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            text-align: center;
+            animation: loginCardIntro 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes loginCardIntro {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .login-logo {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.4));
+            }
+            50% {
+                transform: scale(1.06);
+                filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.7));
+            }
+        }
+
+        .login-title {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-subtitle {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 13px;
+            margin-bottom: 28px;
+            line-height: 1.4;
+        }
+
+        .login-form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .login-form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 6px;
+            letter-spacing: 0.2px;
+        }
+
+        .login-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-input-icon {
+            position: absolute;
+            left: 14px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .login-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 14px;
+            color: rgba(255, 255, 255, 0.45);
+            cursor: pointer;
+            font-size: 16px;
+            user-select: none;
+            transition: color 0.2s;
+        }
+
+        .password-toggle:hover {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 13px 20px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(29, 78, 216, 0.4);
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(29, 78, 216, 0.5);
+            background: linear-gradient(135deg, #4f46e5, #2563eb);
+        }
+
+        .btn-login:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(29, 78, 216, 0.3);
+        }
+
+        .login-error-msg {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            animation: shakeError 0.4s ease;
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+
+        /* ===== LOGOUT BUTTON ===== */
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            margin-left: auto;
+            align-self: center;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+
+        .btn-logout:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
-<body>
+<body class="not-logged-in">
+
+<script>
+    if (sessionStorage.getItem('isLoggedIn') === 'true') {
+        document.body.classList.remove('not-logged-in');
+    }
+</script>
+
+<!-- Login Screen -->
+<div id="login-screen">
+    <div class="login-card">
+        <span class="login-logo">🏥</span>
+        <h2 class="login-title">ISITDOWN Round</h2>
+        <p class="login-subtitle">ระบบตรวจเยี่ยมหอผู้ป่วยก่อนทำงาน<br>กรุณาเข้าสู่ระบบเพื่อความปลอดภัย</p>
+        
+        <div class="login-error-msg" id="loginError">
+            <span>⚠️</span> <span id="loginErrorText">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</span>
+        </div>
+        
+        <form onsubmit="handleLogin(event)">
+            <div class="login-form-group">
+                <label class="login-form-label" for="username">ชื่อผู้ใช้งาน (Username)</label>
+                <div class="login-input-wrapper">
+                    <span class="login-input-icon">👤</span>
+                    <input type="text" id="username" class="login-input" placeholder="กรอกชื่อผู้ใช้งาน" required autocomplete="username">
+                </div>
+            </div>
+            
+            <div class="login-form-group">
+                <label class="login-form-label" for="password">รหัสผ่าน (Password)</label>
+                <div class="login-input-wrapper">
+                    <span class="login-input-icon">🔒</span>
+                    <input type="password" id="password" class="login-input" placeholder="กรอกรหัสผ่าน" required autocomplete="current-password">
+                    <span class="password-toggle" onclick="togglePasswordVisibility()" id="passwordToggle">👁️</span>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-login">เข้าสู่ระบบ ➔</button>
+        </form>
+    </div>
+</div>
 
 <!-- Header -->
 <header class="header">
@@ -844,6 +1111,7 @@
             <div class="time-now" id="clockTime">--:--</div>
             <div id="clockDate">กำลังโหลด...</div>
         </div>
+        <button class="btn-logout" onclick="logout()">🚪 ออกจากระบบ</button>
     </div>
     <div class="progress-strip">
         <span class="label">ความคืบหน้า</span>
@@ -1510,6 +1778,17 @@
     </div>
 </div>
 
+<!-- Logout Confirmation Modal -->
+<div class="modal-mask" id="modalLogout">
+    <div class="modal-box">
+        <div class="modal-emoji">🚪</div>
+        <div class="modal-title">ออกจากระบบ?</div>
+        <div class="modal-desc">คุณต้องการออกจากระบบประเมินตรวจเยี่ยมหอผู้ป่วยใช่หรือไม่?</div>
+        <button class="modal-btn primary" onclick="confirmLogout()">ออกจากระบบ</button>
+        <button class="modal-btn ghost" onclick="closeLogoutModal()">ยกเลิก</button>
+    </div>
+</div>
+
 <script>
 // ===== STATE =====
 const GOOGLE_SCRIPT_URL = "YOUR_GOOGLE_WEB_APP_URL_HERE"; // นำ Web App URL ของ Google Script มาใส่ตรงนี้
@@ -2098,6 +2377,64 @@ function toast(msg, type = 'success') {
     t.textContent = msg;
     t.className = 'toast ' + type + ' show';
     setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== SECURITY & LOGIN =====
+function handleLogin(event) {
+    event.preventDefault();
+    const userEl = document.getElementById('username');
+    const passEl = document.getElementById('password');
+    const errorEl = document.getElementById('loginError');
+    const loginScreen = document.getElementById('login-screen');
+
+    const username = userEl.value.trim();
+    const password = passEl.value;
+
+    if (username === 'Monk1' && password === '35963') {
+        errorEl.style.display = 'none';
+        sessionStorage.setItem('isLoggedIn', 'true');
+        
+        loginScreen.classList.add('fade-out');
+        setTimeout(() => {
+            document.body.classList.remove('not-logged-in');
+            loginScreen.style.display = 'none';
+            toast('🔓 เข้าสู่ระบบสำเร็จ ยินดีต้อนรับ', 'success');
+        }, 400);
+    } else {
+        errorEl.style.display = 'flex';
+        // Reset shake animation
+        errorEl.style.animation = 'none';
+        void errorEl.offsetHeight; // trigger reflow
+        errorEl.style.animation = 'shakeError 0.4s ease';
+
+        passEl.value = '';
+        passEl.focus();
+    }
+}
+
+function togglePasswordVisibility() {
+    const passInput = document.getElementById('password');
+    const toggleBtn = document.getElementById('passwordToggle');
+    if (passInput.type === 'password') {
+        passInput.type = 'text';
+        toggleBtn.textContent = '🙈';
+    } else {
+        passInput.type = 'password';
+        toggleBtn.textContent = '👁️';
+    }
+}
+
+function logout() {
+    document.getElementById('modalLogout').classList.add('show');
+}
+
+function closeLogoutModal() {
+    document.getElementById('modalLogout').classList.remove('show');
+}
+
+function confirmLogout() {
+    sessionStorage.removeItem('isLoggedIn');
+    window.location.reload();
 }
 </script>
 </body>
